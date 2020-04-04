@@ -7,12 +7,21 @@ local block_list = {}
 local current_block = nil
 
 function create_block(x,y,w,h)
-    return {x = x, y = y, w = w, h = h}
+    return {x = x, y = y, w = w, h = h, obstacles = {}}
 end
 
 function draw_block(b,c)
     if b == nil then return end
     rect(b.x, b.y, b.x + b.w, b.y - b.h, c)
+
+    for obs in all(b.obstacles) do
+        print("*", b.x + (b.w * obs.value), b.y - 6, 8)
+    end
+end
+
+function add_obstacle(b, v)
+    if b == nil then return end
+    add(b.obstacles, {value = v})
 end
 
 function player_jumping()
@@ -99,6 +108,10 @@ function _init()
     add(block_list, create_block(16, 56, 96, 8))
     add(block_list, create_block(16, 48, 96, 8))
     current_block = block_list[1]
+
+    add_obstacle(block_list[2], 0.8)
+    add_obstacle(block_list[3], 0.2)
+    add_obstacle(block_list[3], 0.5)
 end
 
 function _update60()
