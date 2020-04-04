@@ -24,6 +24,23 @@ function add_obstacle(b, v)
     add(b.obstacles, {value = v})
 end
 
+function player_hit_obstacle(b) 
+    if b == nil then return end
+
+    for o in all(b.obstacles) do 
+        local dx = player.x - (b.x + b.w * o.value)
+        local dy = player.y - b.y
+        local distance = sqrt(dx * dx + dy * dy)
+
+        if distance < 3 then return true end
+    end
+end
+
+function player_reset()
+    player = {x=64,y=64,di=1,jump_counter=0,ground=true}
+    current_block = block_list[1]
+end
+
 function player_jumping()
     if btnp(4) and
        player.jump_counter == 0 and
@@ -119,6 +136,9 @@ function _update60()
     player_jumping()
     player_apply_gravity()
     player_find_new_current_block()
+    
+    local hit_result = player_hit_obstacle(current_block)
+    if hit_result == true then player_reset() end
 end
 
 function _draw() 
